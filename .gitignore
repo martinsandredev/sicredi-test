@@ -1,0 +1,9 @@
+build/
+.idea/
+*.iml
+.gradle/
+/out/
+.vscode/
+bin
+.metals
+postgres-data
