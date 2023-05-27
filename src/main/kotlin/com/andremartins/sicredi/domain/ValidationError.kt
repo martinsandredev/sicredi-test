@@ -4,4 +4,6 @@ sealed class ValidationError : Throwable() {
     data class InvalidAssociateName(val name: String) : ValidationError()
     data class InvalidCpf(val cpf: String) : ValidationError()
     data class InvalidScheduleName(val name: String) : ValidationError()
+    data class InvalidSessionTime(val time: Long) : ValidationError()
+    object InvalidSessionTimeUnit : ValidationError()
 }
