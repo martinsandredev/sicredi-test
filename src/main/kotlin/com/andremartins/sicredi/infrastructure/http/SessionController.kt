@@ -1,5 +1,6 @@
 package com.andremartins.sicredi.infrastructure.http
 
+import com.andremartins.sicredi.application.SessionResultUseCase
 import com.andremartins.sicredi.application.ToVoteUseCase
 import com.andremartins.sicredi.application.dtos.*
 import com.andremartins.sicredi.infrastructure.dtos.ToVoteBodyRequest
@@ -18,8 +19,73 @@ import java.util.*
 @RequestMapping("/api/v1/sessions")
 class SessionController(
     @Autowired
-    private val toVoteUseCase: ToVoteUseCase
+    private val toVoteUseCase: ToVoteUseCase,
+    @Autowired
+    private val sessionResultUseCase: SessionResultUseCase,
 ) {
+
+    @GetMapping("/{sessionId}/result")
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200", description = "Success", content = [Content(
+                mediaType = "application/json",
+                examples = [ExampleObject(
+                    value = """
+                    {
+                        "data": {
+                            "sessionId": "6c609218-076d-4ef1-9a1a-c8de2d0cf797",
+                            "scheduleId": "5a8b001b-39da-40c4-b7e2-2e7afdde54f6",
+                            "scheduleName": "Name",
+                            "yes": 5,
+                            "no": 3
+                        }
+                    }
+                """
+                )]
+            )]
+        ),
+        ApiResponse(
+            responseCode = "404",
+            description = "Not Found",
+            content = [Content(
+                mediaType = "application/json",
+                examples = [ExampleObject(
+                    value = """
+                    {
+                        "error": {
+                            "code": "code",
+                            "message": "Message"
+                        }
+                    }
+                """
+                )]
+            )]
+        ),
+        ApiResponse(
+            responseCode = "406",
+            description = "Not Acceptable",
+            content = [Content(
+                mediaType = "application/json",
+                examples = [ExampleObject(
+                    value = """
+                    {
+                        "error": {
+                            "code": "code",
+                            "message": "Message"
+                        }
+                    }
+                """
+                )]
+            )]
+        ),
+    )
+    fun sessionResult(
+        @PathVariable sessionId: UUID
+    ): ResponseEntity<Response<SessionResultResponse>> {
+        val res = sessionResultUseCase.execute(SessionResultRequest(sessionId))
+        return ResponseEntity.status(HttpStatus.OK).body(Response.Success(res))
+    }
+
     @PostMapping("/{sessionId}/votes")
     @Transactional
     @ApiResponses(

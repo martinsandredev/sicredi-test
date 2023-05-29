@@ -6,4 +6,5 @@ sealed class DomainError : Throwable() {
     object AssociateNotFound : DomainError()
     object AssociateAlreadyVoted : DomainError()
     object ClosedSession : DomainError()
+    object ResultOnlyAfterSessionClose : DomainError()
 }
